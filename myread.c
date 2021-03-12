@@ -3,28 +3,35 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#define Size 10
+#define BKSize 10
 
 int main(int argc, char **argv)
 {
     int i = 0;
-    int fd = 0, size = Size;
-    //char buffer[11];
-    //memset(buffer, 0, 11);
-    //char *buffer;
-    char *buffer = (char *)malloc(sizeof(char) * Size);
+    int fd = 0, size = BKSize;
+    //分配内存空间
+    char *buffer = (char *)malloc(sizeof(char) * BKSize);
+    
+    //打开目标文件
     fd = open("/root/C/NetWork/1.log", O_RDONLY); // O_RDONLY
+
+    //循环读取文件所有数据
     while (size == Size) {
         size = read(fd, buffer, Size);
-        //printf("i:%d, buffer:%s\n", i,  buffer);
-        //printf("size:%d\n", size);
-        //i++;
+        
+        //输出读到的数据
+        for (i=0; i<BKSize;i++)
+            printf("%c", buffer[i]);
     }
-    //printf("i:%d, buffer:%s\n", i,  buffer);
-    //printf("size:%d\n", size);
+    //输出读到的最后一个块
+    if (size>0 && size<BKSize)
+        for (i=0; i<BKSize;i++)
+            printf("%c", buffer[i]);
+    //关闭文件
     close(fd);
-    //printf("%s", buffer);
     free(buffer);
     return 0;
 }
